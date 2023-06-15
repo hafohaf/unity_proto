@@ -11,6 +11,8 @@ public class Gamelogik : MonoBehaviour
     public GameObject panel;
     private bool taskDone = false;
 
+    public Transform KorbPlacement;
+
     public Button[] flashButton;
     [SerializeField]
     internal sencemanger sencemanger;
@@ -38,9 +40,9 @@ public class Gamelogik : MonoBehaviour
 
     string[] Task = new string[]
     {
-        "ROTE",
-        "GRÜNE",
-        "GELBE"
+        "ROTEN",
+        "GRÜNEN",
+        "GELBEN"
     };
     public void playendsouds()
     {
@@ -68,12 +70,12 @@ public class Gamelogik : MonoBehaviour
             string word = Task[randomIndex];
             Text.text = word;
 
-            if (word == "GRÜNE") // Modify this condition as needed
+            if (word == "GRÜNEN") // Modify this condition as needed
             {
                 Text.color = Color.green; // Change color to green if the word is "GRÜNE"
                 audioSource.clip=clip3;
             }
-            else if (word == "ROTE")
+            else if (word == "ROTEN")
             {
                 Text.color = Color.red; // Change color to red if the word is "ROTE"
                 audioSource.clip=clip1;
@@ -135,7 +137,8 @@ public class Gamelogik : MonoBehaviour
         }
         else
         {
-            flashButton.gameObject.SetActive(false);
+            flashButton.transform.position = KorbPlacement.position;
+            //flashButton.gameObject.SetActive(false);
         }
     }
 
