@@ -9,9 +9,11 @@ public class Gamelogik : MonoBehaviour
     public Text endext;
     public Text fehlertext;
     public GameObject panel;
-    private bool taskDone = false;
 
     public Transform KorbPlacement;
+    public string rightChoice;
+    string targetColor;
+    string[] colors = { "rot", "grün", "blau", "gelb" };
 
     public Button[] flashButton;
     [SerializeField]
@@ -23,7 +25,6 @@ public class Gamelogik : MonoBehaviour
     public AudioClip clip5;
     public AudioClip clip6;
     private AudioClip task;
-    public string targetText;
     private AudioSource audioSource;
     private bool endsouds=true;
     public void read()
@@ -38,12 +39,6 @@ public class Gamelogik : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    string[] Task = new string[]
-    {
-        "ROTEN",
-        "GRÜNEN",
-        "GELBEN"
-    };
     public void playendsouds()
     {
        if (!audioSource.isPlaying&&endsouds==true)
@@ -64,101 +59,67 @@ public class Gamelogik : MonoBehaviour
     {
         fehlertext.gameObject.SetActive(false);
         endext.gameObject.SetActive(false);
-        if (!taskDone)
-        {
-            int randomIndex = Random.Range(0, Task.Length);
-            string word = Task[randomIndex];
-            Text.text = word;
 
-            if (word == "GRÜNEN") // Modify this condition as needed
-            {
-                Text.color = Color.green; // Change color to green if the word is "GRÜNE"
-                audioSource.clip=clip3;
-            }
-            else if (word == "ROTEN")
-            {
-                Text.color = Color.red; // Change color to red if the word is "ROTE"
-                audioSource.clip=clip1;
-            }
-            
-            else
-            {
-                Text.color = Color.yellow; // Change color to yellow for other words
-               audioSource.clip=clip2;
-            }
-            
-        }
-        task=audioSource.clip;
-        audioSource.Play();
-    }
-
-        
-
-            
-        
-    
-
-    private void Update()
-    {
-        bool matchFound = false;
+        targetColor = colors[Random.Range(0, colors.Length)];
 
         foreach (Button flashButton in flashButton)
         {
-            if (flashButton.gameObject.activeSelf && flashButton.image.color == Text.color)
-            {
-                matchFound = true;
-                break;
-            }
-        }
-
-        if (!matchFound)
-        {
-            foreach (Button flashButton in flashButton)
-            {
-                flashButton.gameObject.SetActive(false);
-            }
-
-            endext.gameObject.SetActive(true);
-            
-            panel.gameObject.SetActive(false);
-            playendsouds();
-            
+            flashButton.onClick.AddListener(() => CheckTag(flashButton));
         }
         
-    }
-
-    public void checkfabe(Button flashButton)
-    {
-        if (flashButton.image.color != Text.color)
+        if (targetColor == "rot")
         {
-            string colorName = GetColorName(flashButton.image.color);
+            Text.color = Color.red;
+            Text.text = "ROTEN";
+            audioSource.clip=clip1;
+        }
+        else if (targetColor == "grün")
+        {
+            Text.color = Color.green;
+            Text.text = "GRÜNEN";
+            audioSource.clip=clip3;
+        }
+        else if (targetColor == "blau")
+        {
+            Text.color = Color.blue;
+            Text.text = "BLAUEN";
+        }
+        else if (targetColor == "gelb")
+        {
+            Text.color = Color.yellow;
+            Text.text = "GELBEN";
+        }
+        
+        task=audioSource.clip;
+        audioSource.Play();
+    }
+    
+     private void CheckTag(Button flashButton)
+    {
+        if (flashButton.CompareTag(targetColor))
+        {
+            flashButton.transform.position = KorbPlacement.position;
+            flashButton.tag = rightChoice;
+        }
+        else
+        {
+            string colorName = flashButton.tag;
             fehlertext.text = "Das ist " + colorName;
             fehlertext.gameObject.SetActive(true);
         }
-        else
-        {
-            flashButton.transform.position = KorbPlacement.position;
-            //flashButton.gameObject.SetActive(false);
-        }
     }
 
-    private string GetColorName(Color color)
+    private void Update()
     {
-        if (color == Color.green)
+        GameObject targetObjects = GameObject.FindWithTag(targetColor);
+        if (targetObjects == null)
         {
-            return "Grün";
-        }
-        else if (color == Color.red)
-        {
-            return "Rot";
-        }
-        else if (color == Color.yellow)
-        {
-            return "Gelb";
-        }
-        else
-        {
-            return "Unbekannt";
+            endext.gameObject.SetActive(true);
+            panel.gameObject.SetActive(false);
+            playendsouds();
+
+            foreach (Button flashButton in flashButton)
+            {flashButton.gameObject.SetActive(false);}            
         }
     }
 }
