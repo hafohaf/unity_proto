@@ -10,7 +10,7 @@ public class RandomPlacement : MonoBehaviour
         PlaceObjectsRandomly();
     }
 
-    private void PlaceObjectsRandomly()
+     public void PlaceObjectsRandomly()
     {
         int objectCount = objectsToPlace.Length;
         int pointCount = placementPoints.Length;

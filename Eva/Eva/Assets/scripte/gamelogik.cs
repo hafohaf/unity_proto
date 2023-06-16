@@ -6,16 +6,18 @@ using UnityEngine.UI;
 public class Gamelogik : MonoBehaviour
 {
     public Text Text;
-    public Text endext;
+    public Image endext;
     public Text fehlertext;
     public GameObject panel;
-
+    private int lvcounter;
     public Transform KorbPlacement;
     public string rightChoice;
     string targetColor;
-    string[] colors = { "rot", "grün", "blau", "gelb" };
+    string[] colors = { "rot", "grün", "gelb" };
 
     public Button[] flashButton;
+    [SerializeField]
+     internal RandomPlacement randomplacement;
     [SerializeField]
     internal sencemanger sencemanger;
     public AudioClip clip1;
@@ -33,7 +35,28 @@ public class Gamelogik : MonoBehaviour
          { audioSource.clip=task;
             audioSource.Play();}
     }
+    public void settagback()
+    {
+        foreach(Button flashButton in flashButton)
+        {
+            if(flashButton.CompareTag("Untagged"))
+            {
+               if(Text.text=="ROTEN")
+               {
+                flashButton.tag = "rot";
+               }
+               else if(Text.text=="GRÜNEN")
+               {
+                flashButton.tag = "grün";
+               }
+                else if(Text.text=="GELBEN")
+               {
+                flashButton.tag = "gelb";
+               }
 
+            }
+        }
+    }
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -49,16 +72,11 @@ public class Gamelogik : MonoBehaviour
         
         }
     }
-    public IEnumerator waitup(float delay)
-    {
-        yield return new WaitForSeconds(audioSource.clip.length + delay);
-        Debug.Log("wait");
-        sencemanger.Nextscnec();
-    }
-    private void Start()
+    public void stratsetup()
     {
         fehlertext.gameObject.SetActive(false);
         endext.gameObject.SetActive(false);
+        randomplacement.PlaceObjectsRandomly();
 
         targetColor = colors[Random.Range(0, colors.Length)];
 
@@ -79,19 +97,27 @@ public class Gamelogik : MonoBehaviour
             Text.text = "GRÜNEN";
             audioSource.clip=clip3;
         }
-        else if (targetColor == "blau")
-        {
-            Text.color = Color.blue;
-            Text.text = "BLAUEN";
-        }
+        
         else if (targetColor == "gelb")
         {
             Text.color = Color.yellow;
             Text.text = "GELBEN";
+            audioSource.clip=clip2;
         }
         
         task=audioSource.clip;
         audioSource.Play();
+    }
+    public IEnumerator waitup(float delay)
+    {
+        yield return new WaitForSeconds(audioSource.clip.length + delay);
+        Debug.Log("wait");
+        sencemanger.Nextscnec();
+    }
+    private void Start()
+    {
+        lvcounter=0;
+        stratsetup();
     }
     
      private void CheckTag(Button flashButton)
@@ -112,10 +138,17 @@ public class Gamelogik : MonoBehaviour
     private void Update()
     {
         GameObject targetObjects = GameObject.FindWithTag(targetColor);
-        if (targetObjects == null)
+        if(targetObjects==null&&lvcounter<3)
+        {
+            settagback();
+            stratsetup();
+            lvcounter++;
+        }
+        if (targetObjects == null&&lvcounter==3)
         {
             endext.gameObject.SetActive(true);
             panel.gameObject.SetActive(false);
+
             playendsouds();
 
             foreach (Button flashButton in flashButton)
