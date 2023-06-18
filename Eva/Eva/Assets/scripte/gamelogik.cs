@@ -9,15 +9,14 @@ public class Gamelogik : MonoBehaviour
     public Image endext;
     public Text fehlertext;
     public GameObject panel;
-    private int lvcounter;
     public Transform KorbPlacement;
-    public string rightChoice;
+    string rightChoice = "Untagged";
     string targetColor;
     string[] colors = { "rot", "grün", "gelb" };
+    public Transform[] placementPoints; // Array mit den Platzierungspunkten
+    private int currentRound = 0;
 
     public Button[] flashButton;
-    [SerializeField]
-     internal RandomPlacement randomplacement;
     [SerializeField]
     internal sencemanger sencemanger;
     public AudioClip clip1;
@@ -29,34 +28,64 @@ public class Gamelogik : MonoBehaviour
     private AudioClip task;
     private AudioSource audioSource;
     private bool endsouds=true;
+
+    public void settagback()
+    {
+        foreach(Button flashButton in flashButton)
+        {
+            if(flashButton.CompareTag(rightChoice))
+            {
+               if(Text.text.Equals("ROTEN"))
+               {
+                flashButton.tag = "rot";
+               }
+               else if(Text.text.Equals("GRÜNEN"))
+               {
+                flashButton.tag = "grün";
+               }
+                else if(Text.text.Equals("GELBEN"))
+               {
+                flashButton.tag = "gelb";
+               }
+            }
+        }
+    }
+
+
+    public void PlaceObjectsRandomly()
+    {
+        int objectCount = flashButton.Length;
+        int pointCount = placementPoints.Length;
+
+        if (objectCount != pointCount)
+        {
+            Debug.LogError("Die Anzahl der zu platzierenden Objekte stimmt nicht mit der Anzahl der Platzierungspunkte überein.");
+            return;
+        }
+
+        // Mische die Platzierungspunkte zufällig
+        for (int i = 0; i < pointCount - 1; i++)
+        {
+            int randomIndex = Random.Range(i, pointCount);
+            Transform temp = placementPoints[randomIndex];
+            placementPoints[randomIndex] = placementPoints[i];
+            placementPoints[i] = temp;
+        }
+
+        // Platziere die Gameobjects an den zufällig sortierten Platzierungspunkten
+        for (int i = 0; i < objectCount; i++)
+        {
+            flashButton[i].transform.position = placementPoints[i].position;
+        }
+    }
+
     public void read()
     {
          if (!audioSource.isPlaying)
          { audioSource.clip=task;
             audioSource.Play();}
     }
-    public void settagback()
-    {
-        foreach(Button flashButton in flashButton)
-        {
-            if(flashButton.CompareTag("Untagged"))
-            {
-               if(Text.text=="ROTEN")
-               {
-                flashButton.tag = "rot";
-               }
-               else if(Text.text=="GRÜNEN")
-               {
-                flashButton.tag = "grün";
-               }
-                else if(Text.text=="GELBEN")
-               {
-                flashButton.tag = "gelb";
-               }
-
-            }
-        }
-    }
+    
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -72,11 +101,18 @@ public class Gamelogik : MonoBehaviour
         
         }
     }
-    public void stratsetup()
+    void Start()
     {
+        StartGame();
+    }
+
+    public void StartGame()
+    {
+        currentRound++;
+
         fehlertext.gameObject.SetActive(false);
         endext.gameObject.SetActive(false);
-        randomplacement.PlaceObjectsRandomly();
+        PlaceObjectsRandomly();
 
         targetColor = colors[Random.Range(0, colors.Length)];
 
@@ -108,26 +144,22 @@ public class Gamelogik : MonoBehaviour
         task=audioSource.clip;
         audioSource.Play();
     }
+
     public IEnumerator waitup(float delay)
     {
         yield return new WaitForSeconds(audioSource.clip.length + delay);
         Debug.Log("wait");
         sencemanger.Nextscnec();
     }
-    private void Start()
-    {
-        lvcounter=0;
-        stratsetup();
-    }
     
-     private void CheckTag(Button flashButton)
+    private void CheckTag(Button flashButton)
     {
         if (flashButton.CompareTag(targetColor))
         {
             flashButton.transform.position = KorbPlacement.position;
             flashButton.tag = rightChoice;
         }
-        else
+        else if (!flashButton.CompareTag(rightChoice))
         {
             string colorName = flashButton.tag;
             fehlertext.text = "Das ist " + colorName;
@@ -135,16 +167,16 @@ public class Gamelogik : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
         GameObject targetObjects = GameObject.FindWithTag(targetColor);
-        if(targetObjects==null&&lvcounter<3)
+
+        if (targetObjects==null && currentRound < 3)
         {
             settagback();
-            stratsetup();
-            lvcounter++;
+            StartGame();
         }
-        if (targetObjects == null&&lvcounter==3)
+        else if (targetObjects == null && currentRound == 3)
         {
             endext.gameObject.SetActive(true);
             panel.gameObject.SetActive(false);
