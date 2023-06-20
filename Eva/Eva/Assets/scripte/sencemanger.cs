@@ -19,7 +19,7 @@ public class sencemanger : MonoBehaviour
    }
    public void mag()
    {
-     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-2);
+     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-3);
    
    }
    public void magnicht()
@@ -27,4 +27,13 @@ public class sencemanger : MonoBehaviour
 
      SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-4);
    }
+   public void gosetting()
+   {
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+6);
+   }
+   public void backvonsetting()
+   {
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-6);
+   }
+
 }

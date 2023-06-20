@@ -29,4 +29,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/warum.unity
     guid: 4b2452afaa372274988535df42f271f5
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/einstellung.unity
+    guid: d5f7ce59288dba7468c8d9d33a3cd679
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 897d4f9f891f4594b9d8a2c9f1ca3505, type: 2}
