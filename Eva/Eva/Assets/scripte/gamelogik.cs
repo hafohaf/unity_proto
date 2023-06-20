@@ -204,6 +204,7 @@ public class Gamelogik : MonoBehaviour
         }
         else if (targetObjects == null && currentRound == 3)
         {
+            fehlertext.gameObject.SetActive(false);
             endext.gameObject.SetActive(true);
             rundepanel.gameObject.SetActive(false);
             panel.gameObject.SetActive(false);
