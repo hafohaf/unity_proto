@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
+
 public class Gamelogik : MonoBehaviour
 {
+    
     public Text Text;
     public Image endext;
     public Text rundeText;
@@ -18,7 +20,7 @@ public class Gamelogik : MonoBehaviour
     string[] colors = { "rot", "grün", "gelb" };
     public Transform[] placementPoints; // Array mit den Platzierungspunkten
     public int currentRound = 1;
-
+    
     public Button[] flashButton;
     [SerializeField]
     internal sencemanger sencemanger;
@@ -154,7 +156,9 @@ public class Gamelogik : MonoBehaviour
     {
         yield return new WaitForSeconds(audioSource.clip.length + delay);
         Debug.Log("wait");
-        sencemanger.Nextscnec();
+        
+        sencemanger.senceindex();
+        
     }
     
     private void CheckTag(Button flashButton)
@@ -187,7 +191,7 @@ public class Gamelogik : MonoBehaviour
                 audioSource.clip=clip7;
                 audioSource.Play();
             }
-            fehlertext.text = "Das ist " + colorName;
+            fehlertext.text = "Das war " + colorName;
             fehlertext.gameObject.SetActive(true);
         }
     }

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class sencemanger : MonoBehaviour
 {
+     
    public void Nextscnec()
    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
@@ -13,6 +14,8 @@ public class sencemanger : MonoBehaviour
    public void hard()
    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+2);
+       
+
    }
 
    public void back()
@@ -24,21 +27,32 @@ public class sencemanger : MonoBehaviour
    }
    public void mag()
    {
-     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-3);
+     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-5);
    
    }
    public void magnicht()
    {
 
-     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-4);
+     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-6);
    }
    public void gosetting()
    {
-    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+6);
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+8);
    }
    public void backvonsetting()
    {
-    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-6);
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex-8);
    }
-
+ public void senceindex()
+ {
+     int index= SceneManager.GetActiveScene().buildIndex;
+    if(index==6)
+    {
+     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+    }
+    else
+    {
+     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+2);
+    }
+ }
 }
