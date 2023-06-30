@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class sencemanger : MonoBehaviour
 {
-     
+   
    public void Nextscnec()
    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
@@ -54,5 +54,12 @@ public class sencemanger : MonoBehaviour
     {
      SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+2);
     }
+ }
+ public string getcurrentscencename(string name)
+ 
+ {
+     name=SceneManager.GetActiveScene().name;
+     Debug.Log(name);
+     return name;
  }
 }

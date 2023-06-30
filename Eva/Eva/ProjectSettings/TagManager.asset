@@ -8,6 +8,8 @@ TagManager:
   - "gr\xFCn"
   - blau
   - gelb
+  - lila
+  - orange
   layers:
   - Default
   - TransparentFX

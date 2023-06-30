@@ -10,6 +10,7 @@ public class Gamelogik : MonoBehaviour
     
     public Text Text;
     public Image endext;
+    public Image farbe;
     public Text rundeText;
     public Text fehlertext;
     public GameObject panel;
@@ -18,9 +19,10 @@ public class Gamelogik : MonoBehaviour
     string rightChoice = "Untagged";
     string targetColor;
     string[] colors = { "rot", "grün", "gelb" };
+    string[] colors2 = { "rot", "grün", "gelb","lila","orange" };
     public Transform[] placementPoints; // Array mit den Platzierungspunkten
     public int currentRound = 1;
-    
+    private string scencename;
     public Button[] flashButton;
     [SerializeField]
     internal sencemanger sencemanger;
@@ -53,6 +55,14 @@ public class Gamelogik : MonoBehaviour
                 else if(Text.text.Equals("GELBEN"))
                {
                 flashButton.tag = "gelb";
+               }
+               else if(Text.text.Equals("Lila"))
+               {
+                flashButton.tag = "lila";
+               }
+                else if(Text.text.Equals("Orange"))
+               {
+                flashButton.tag = "orange";
                }
             }
         }
@@ -96,6 +106,8 @@ public class Gamelogik : MonoBehaviour
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+       
+        
     }
 
     public void playendsouds()
@@ -118,9 +130,16 @@ public class Gamelogik : MonoBehaviour
         rundepanel.gameObject.SetActive(true);
         fehlertext.gameObject.SetActive(false);
         endext.gameObject.SetActive(false);
+        
         PlaceObjectsRandomly();
-      
-        targetColor = colors[Random.Range(0, colors.Length)];
+        if(sencemanger.getcurrentscencename(scencename)=="game1_easy")
+        {
+            targetColor = colors[Random.Range(0, colors.Length)];
+        }
+        else if(sencemanger.getcurrentscencename(scencename)=="game1_hard")
+        {
+            targetColor = colors2[Random.Range(0, colors2.Length)];
+        }
         string nummer=currentRound.ToString();
         rundeText.text=nummer;
         foreach (Button flashButton in flashButton)
@@ -130,12 +149,14 @@ public class Gamelogik : MonoBehaviour
         
         if (targetColor == "rot")
         {
+            farbe.color = Color.red;
             Text.color = Color.red;
             Text.text = "ROTEN";
             audioSource.clip=clip1;
         }
         else if (targetColor == "grün")
         {
+          farbe.color = Color.green;
             Text.color = Color.green;
             Text.text = "GRÜNEN";
             audioSource.clip=clip3;
@@ -143,11 +164,25 @@ public class Gamelogik : MonoBehaviour
         
         else if (targetColor == "gelb")
         {
+           farbe.color= Color.yellow;
             Text.color = Color.yellow;
             Text.text = "GELBEN";
             audioSource.clip=clip2;
         }
-        
+        else if (targetColor == "lila")
+        {
+           farbe.color= new Color(0.6f, 0.4f, 0.8f); 
+            Text.color = new Color(0.6f, 0.4f, 0.8f); 
+            Text.text = "Lila";
+            audioSource.clip=clip2;
+        }
+        else if (targetColor == "orange")
+        {
+           farbe.color= new Color(1f, 0.647f, 0f);
+            Text.color = new Color(1f, 0.647f, 0f);
+            Text.text = "Orange";
+            audioSource.clip=clip2;
+        }
         task=audioSource.clip;
         audioSource.Play();
     }
@@ -170,28 +205,9 @@ public class Gamelogik : MonoBehaviour
         }
         else if (!flashButton.CompareTag(rightChoice))
         {
-            string colorName = flashButton.tag;
-            if(colorName=="rot")
-            {
-                audioSource.clip=clip4;
-                audioSource.Play();
-            }
-            else if(colorName=="grün")
-            {
-                audioSource.clip= clip5;
-                audioSource.Play();
-            }
-            else if(colorName=="gelb")
-            {
-                audioSource.clip=clip6;
-                audioSource.Play();
-            }
-            else if(colorName=="blau")
-            {
-                audioSource.clip=clip7;
-                audioSource.Play();
-            }
-            fehlertext.text = "Das war " + colorName;
+            fehlertext.text = "Das war falsh";
+            audioSource.clip=clip4;
+            audioSource.Play();
             fehlertext.gameObject.SetActive(true);
         }
     }
@@ -212,7 +228,7 @@ public class Gamelogik : MonoBehaviour
             endext.gameObject.SetActive(true);
             rundepanel.gameObject.SetActive(false);
             panel.gameObject.SetActive(false);
-            
+            farbe.gameObject.SetActive(false);
             playendsouds();
 
             foreach (Button flashButton in flashButton)
